@@ -9,7 +9,7 @@ class GildedRose(object):
     def update_quality(self):
         for item in self.items:
             quality_updater = get_quality_updater(item)
-            quality_updater.update_quality()
+            quality_updater.update()
 
 
 class Item:
