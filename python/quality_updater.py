@@ -29,17 +29,22 @@ class QualityUpdater:
 
 
 class AgedBrieUpdater(QualityUpdater):
+    def __init__(self, item):
+        super().__init__(item)
+
     def update_quality(self):
         if self.item.quality < 50:
             self.item.quality += 1
 
+    def update_sell_in(self):
+        self.item.sell_in -= 1
 
 class SulfurasUpdater(QualityUpdater):
     def update_quality(self):
-        return
+        pass
 
     def update_sell_in(self):
-        return
+        pass
 
 
 class BackstagePassUpdater(QualityUpdater):
