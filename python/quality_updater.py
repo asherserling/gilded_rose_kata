@@ -38,7 +38,7 @@ class AgedBrieUpdater(QualityUpdater):
             if not self.item.quality + increase > 50:
                 self.item.quality += increase
             else:
-                self.item.quality = increase
+                self.item.quality = 50
 
     def calculate_increase(self, sell_in):
         if sell_in > 0:
