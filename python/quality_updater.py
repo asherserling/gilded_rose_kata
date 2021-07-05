@@ -31,12 +31,20 @@ class QualityUpdater:
 
 
 class AgedBrieUpdater(QualityUpdater):
-    def __init__(self, item):
-        super().__init__(item)
-
     def update_quality(self):
         if self.item.quality < 50:
-            self.item.quality += 1
+            increase = self.calculate_increase(self.item.sell_in)
+
+            if not self.item.quality + increase > 50:
+                self.item.quality += increase
+            else:
+                self.item.quality = increase
+
+    def calculate_increase(self, sell_in):
+        if sell_in > 0:
+            return 1
+        else:
+            return 2
 
 
 class SulfurasUpdater(QualityUpdater):
@@ -49,15 +57,24 @@ class SulfurasUpdater(QualityUpdater):
 
 class BackstagePassUpdater(QualityUpdater):
     def update_quality(self):
-        if self.item.sell_in > 0 and self.item.quality < 50:
-            if self.item.sell_in > 10:
-                self.item.quality += 1
-            elif self.item.sell_in > 5:
-                self.item.quality += 2
+        if self.item.sell_in > 0:
+            increase = self.calculate_increase(self.item.sell_in)
+            
+            if not self.item.quality + increase > 50:
+                self.item.quality += increase
             else:
-                self.item.quality += 3
+                self.item.quality = 50
+
         elif self.item.sell_in <= 0:
             self.item.quality = 0
+
+    def calculate_increase(self, sell_in):
+        if sell_in > 10:
+            return 1
+        elif 5 < sell_in <= 10:
+            return 2
+        elif 0 < sell_in <= 5:
+            return 3
 
 
 class ConjuredUpdater(QualityUpdater):

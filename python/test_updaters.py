@@ -77,7 +77,7 @@ class UpdaterTest(unittest.TestCase):
 
         quality_updater.update()
 
-        self.assertEqual(51, item.quality)
+        self.assertEqual(50, item.quality)
 
     def test_backstage_pass_increases_correctly_at_5(self):
         item = Item(name="Backstage passes to a TAFKAL80ETC concert", sell_in=5, quality=49)
@@ -85,7 +85,7 @@ class UpdaterTest(unittest.TestCase):
 
         quality_updater.update()
 
-        self.assertEqual(52, item.quality)
+        self.assertEqual(50, item.quality)
 
     def test_backstage_pass_worthless_after_concert(self):
         item = Item(name="Backstage passes to a TAFKAL80ETC concert", sell_in=0, quality=49)
