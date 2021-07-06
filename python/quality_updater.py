@@ -24,7 +24,7 @@ class QualityUpdater:
             if self.item.sell_in > 0:
                 self.item.quality -= base_rate
             else:
-                 self.item.quality -= base_rate * 2
+                self.item.quality -= base_rate * 2
 
     def update_sell_in(self):
         self.item.sell_in -= 1
@@ -59,7 +59,7 @@ class BackstagePassUpdater(QualityUpdater):
     def update_quality(self):
         if self.item.sell_in > 0:
             increase = self.calculate_increase(self.item.sell_in)
-            
+
             if not self.item.quality + increase > 50:
                 self.item.quality += increase
             else:
