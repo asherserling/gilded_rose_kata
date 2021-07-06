@@ -20,31 +20,62 @@ class QualityUpdater:
         self.update_sell_in()
 
     def update_quality(self, base_rate=1):
-        if self.item.quality > 0:
-            if self.item.sell_in > 0:
-                self.item.quality -= base_rate
-            else:
-                self.item.quality -= base_rate * 2
+        delta = self.calculate_delta(self.item.sell_in)
+        potential_quality = self.item.quality + delta
+        bounded_quality = self.enforce_boundaries(potential_quality)
+        self.item.quality = bounded_quality
 
     def update_sell_in(self):
         self.item.sell_in -= 1
 
+    def calculate_delta(self, sell_in):
+        if sell_in > 0:
+            return -1
+        else:
+            return -2
+
+    def enforce_boundaries(self, quality):
+        if 0 <= quality <= 50:
+            return quality
+        elif quality < 0:
+            return 0
+        else:
+            return 50
+
+
+class ConjuredUpdater(QualityUpdater):
+    def calculate_delta(self, sell_in):
+        if sell_in > 0:
+            return -2
+        else:
+            return -4
+
+
+def enforce_upper_bound(quality):
+    if quality <= 50:
+        return quality
+    else:
+        return 50
+
 
 class AgedBrieUpdater(QualityUpdater):
-    def update_quality(self):
-        if self.item.quality < 50:
-            increase = self.calculate_increase(self.item.sell_in)
-
-            if not self.item.quality + increase > 50:
-                self.item.quality += increase
-            else:
-                self.item.quality = 50
-
-    def calculate_increase(self, sell_in):
+    def calculate_delta(self, sell_in):
         if sell_in > 0:
             return 1
         else:
             return 2
+
+
+class BackstagePassUpdater(QualityUpdater):
+    def calculate_delta(self, sell_in):
+        if sell_in > 10:
+            return 1
+        elif 5 < sell_in <= 10:
+            return 2
+        elif 0 < sell_in <= 5:
+            return 3
+        elif sell_in <= 0:
+            return self.item.quality * -1
 
 
 class SulfurasUpdater(QualityUpdater):
@@ -53,30 +84,3 @@ class SulfurasUpdater(QualityUpdater):
 
     def update_sell_in(self):
         pass
-
-
-class BackstagePassUpdater(QualityUpdater):
-    def update_quality(self):
-        if self.item.sell_in > 0:
-            increase = self.calculate_increase(self.item.sell_in)
-
-            if not self.item.quality + increase > 50:
-                self.item.quality += increase
-            else:
-                self.item.quality = 50
-
-        elif self.item.sell_in <= 0:
-            self.item.quality = 0
-
-    def calculate_increase(self, sell_in):
-        if sell_in > 10:
-            return 1
-        elif 5 < sell_in <= 10:
-            return 2
-        elif 0 < sell_in <= 5:
-            return 3
-
-
-class ConjuredUpdater(QualityUpdater):
-    def update_quality(self):
-        super().update_quality(base_rate=2)
