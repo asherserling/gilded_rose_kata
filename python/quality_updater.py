@@ -51,13 +51,6 @@ class ConjuredUpdater(QualityUpdater):
             return -4
 
 
-def enforce_upper_bound(quality):
-    if quality <= 50:
-        return quality
-    else:
-        return 50
-
-
 class AgedBrieUpdater(QualityUpdater):
     def calculate_delta(self, sell_in):
         if sell_in > 0:
