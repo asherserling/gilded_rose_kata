@@ -23,16 +23,16 @@ class QualityUpdater:
             "sell_in": self.calculate_sell_in(item)
         }
 
-    def calculate_quality(self, item, base_rate=1):
+    def calculate_quality(self, item):
         delta = self.calculate_quality_delta(item)
         potential_quality = item.quality + delta
         return self.enforce_boundaries(potential_quality)
 
-    def calculate_quality_delta(self, item):
+    def calculate_quality_delta(self, item, base_rate=1):
         if item.sell_in > self.quality_lower_bound:
-            return -1
+            return -base_rate
         else:
-            return -2
+            return -base_rate * 2
 
     def enforce_boundaries(self, quality):
         if self.quality_lower_bound <= quality <= self.quality_upper_bound:
@@ -49,10 +49,7 @@ class QualityUpdater:
 
 class ConjuredUpdater(QualityUpdater):
     def calculate_quality_delta(self, item):
-        if item.sell_in > 0:
-            return -2
-        else:
-            return -4
+        return super().calculate_quality_delta(item, 2)
 
 
 class AgedBrieUpdater(QualityUpdater):
