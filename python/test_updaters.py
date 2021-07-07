@@ -17,100 +17,97 @@ from gilded_rose import Item
 #             ]
 
 class UpdaterTest(unittest.TestCase):
-    def test_updates_standard_item_before_sell_date(self):
-        item = Item(name="+5 Dexterity Vest", sell_in=10, quality=20)
+    def update_item_n_times(self, item, n):
         quality_updater = get_quality_updater(item)
 
-        for i in range(10):
-            quality_updater.update()
+        temp = item
+        for i in range(n):
+            updated_values = quality_updater.calculate_update(temp)
+            temp = Item(
+                temp.name,
+                updated_values['sell_in'],
+                updated_values['quality']
+            )
+        
+        return temp
 
-        self.assertEqual(10, item.quality)
+    def test_updates_standard_item_before_sell_date(self):
+        item = Item(name="+5 Dexterity Vest", sell_in=10, quality=20)
+
+        updated_item = self.update_item_n_times(item, 10)
+
+        self.assertEqual(10, updated_item.quality)
 
     def test_updates_standard_item_after_sell_date(self):
         item = Item(name="+5 Dexterity Vest", sell_in=10, quality=20)
-        quality_updater = get_quality_updater(item)
+        
+        updated_item = self.update_item_n_times(item, 11)
 
-        for i in range(11):
-            quality_updater.update()
-
-        self.assertEqual(8, item.quality)
+        self.assertEqual(8, updated_item.quality)
 
     def test_standard_item_never_less_than_zero(self):
         item = Item(name="+5 Dexterity Vest", sell_in=10, quality=20)
-        quality_updater = get_quality_updater(item)
 
-        for i in range(1000):
-            quality_updater.update()
+        updated_item = self.update_item_n_times(item, 1000)
 
-        self.assertEqual(0, item.quality)
+        self.assertEqual(0, updated_item.quality)
         
     def test_aged_brie_increases_until_50(self):
         item = Item(name="Aged Brie", sell_in=2, quality=0)
-        quality_updater = get_quality_updater(item)
-    
-        for i in range(1000):
-            quality_updater.update()
+        
+        updated_item = self.update_item_n_times(item, 1000)
 
-        self.assertEqual(50, item.quality)
+        self.assertEqual(50, updated_item.quality)
 
     def test_sulfuras_always_80_and_sell_in_stays_same(self):
         item = Item(name="Sulfuras, Hand of Ragnaros", sell_in=0, quality=80)
-        quality_updater = get_quality_updater(item)
+        
+        updated_item = self.update_item_n_times(item, 1000)
 
-        for i in range(1000):
-            quality_updater.update()
-
-        self.assertEqual(80, item.quality)
-        self.assertEqual(0, item.sell_in)
+        self.assertEqual(80, updated_item.quality)
+        self.assertEqual(0, updated_item.sell_in)
 
     def test_backstage_pass_increases_correctly_before_10(self):
         item = Item(name="Backstage passes to a TAFKAL80ETC concert", sell_in=11, quality=49)
-        quality_updater = get_quality_updater(item)
+        
+        updated_item = self.update_item_n_times(item, 1)
 
-        quality_updater.update()
-
-        self.assertEqual(50, item.quality)
+        self.assertEqual(50, updated_item.quality)
 
     def test_backstage_pass_increases_correctly_at_10(self):
         item = Item(name="Backstage passes to a TAFKAL80ETC concert", sell_in=10, quality=49)
-        quality_updater = get_quality_updater(item)
+        
+        updated_item = self.update_item_n_times(item, 1)
 
-        quality_updater.update()
-
-        self.assertEqual(50, item.quality)
+        self.assertEqual(50, updated_item.quality)
 
     def test_backstage_pass_increases_correctly_at_5(self):
         item = Item(name="Backstage passes to a TAFKAL80ETC concert", sell_in=5, quality=49)
-        quality_updater = get_quality_updater(item)
+        
+        updated_item = self.update_item_n_times(item, 1)
 
-        quality_updater.update()
-
-        self.assertEqual(50, item.quality)
+        self.assertEqual(50, updated_item.quality)
 
     def test_backstage_pass_worthless_after_concert(self):
         item = Item(name="Backstage passes to a TAFKAL80ETC concert", sell_in=0, quality=49)
-        quality_updater = get_quality_updater(item)
+        
+        updated_item = self.update_item_n_times(item, 1)
 
-        quality_updater.update()
-
-        self.assertEqual(0, item.quality)
+        self.assertEqual(0, updated_item.quality)
 
     def test_conjured_decreases_correctly_before_sale_by(self):
         item = Item(name="Conjured Mana Cake", sell_in=3, quality=6)
-        quality_updater = get_quality_updater(item)
+        
+        updated_item = self.update_item_n_times(item, 1)
 
-        quality_updater.update()
-
-        self.assertEqual(4, item.quality)
+        self.assertEqual(4, updated_item.quality)
 
     def test_conjured_decreases_correctly_after_sale_by(self):
         item = Item(name="Conjured Mana Cake", sell_in=3, quality=10)
-        quality_updater = get_quality_updater(item)
 
-        for i in range(4):
-            quality_updater.update()
+        updated_item = self.update_item_n_times(item, 4)
 
-        self.assertEqual(0, item.quality)
+        self.assertEqual(0, updated_item.quality)
 
 if __name__ == '__main__':
     unittest.main()

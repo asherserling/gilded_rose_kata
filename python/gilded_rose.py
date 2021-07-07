@@ -7,9 +7,15 @@ class GildedRose(object):
         self.items = items
 
     def update_quality(self):
-        for item in self.items:
+        for i, item in enumerate(self.items):
             quality_updater = get_quality_updater(item)
-            quality_updater.update()
+            updated_values = quality_updater.calculate_update(item)
+
+            self.items[i] = Item(
+                item.name,
+                updated_values['sell_in'],
+                updated_values['quality']
+            )
 
 
 class Item:
