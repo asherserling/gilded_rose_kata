@@ -7,16 +7,21 @@ class GildedRose(object):
         self.items = items
 
     def update_quality(self):
-        for i, item in enumerate(self.items):
-            quality_updater = get_quality_updater(item)
-            updated_values = quality_updater.calculate_update(item)
+        self.items = map(
+            self.update_item,
+            self.items
+        )
+        
+    def update_item(self, item):
+        quality_updater = get_quality_updater(item)
+        
+        updated_values = quality_updater.calculate_update(item)
 
-            self.items[i] = Item(
-                item.name,
-                updated_values['sell_in'],
-                updated_values['quality']
-            )
-
+        return Item(
+            item.name,
+            updated_values['sell_in'],
+            updated_values['quality']
+        )
 
 class Item:
     def __init__(self, name, sell_in, quality):
