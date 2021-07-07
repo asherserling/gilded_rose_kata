@@ -46,7 +46,6 @@ class QualityUpdater:
         return item.sell_in + self.sell_in_delta
 
 
-
 class ConjuredUpdater(QualityUpdater):
     def calculate_quality_delta(self, item):
         return super().calculate_quality_delta(item, 2)
