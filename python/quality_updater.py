@@ -14,8 +14,8 @@ def get_quality_updater(item):
 class QualityUpdater:
     def __init__(self):
         self.sell_in_delta = -1
-        self.upper_bound = 50
-        self.lower_bound = 0
+        self.quality_upper_bound = 50
+        self.quality_lower_bound = 0
 
     def calculate_update(self, item):
         return {
@@ -29,18 +29,18 @@ class QualityUpdater:
         return self.enforce_boundaries(potential_quality)
 
     def calculate_quality_delta(self, item):
-        if item.sell_in > self.lower_bound:
+        if item.sell_in > self.quality_lower_bound:
             return -1
         else:
             return -2
 
     def enforce_boundaries(self, quality):
-        if self.lower_bound <= quality <= self.upper_bound:
+        if self.quality_lower_bound <= quality <= self.quality_upper_bound:
             return quality
-        elif quality < self.lower_bound:
-            return self.lower_bound
+        elif quality < self.quality_lower_bound:
+            return self.quality_lower_bound
         else:
-            return self.upper_bound
+            return self.quality_upper_bound
 
     def calculate_sell_in(self, item):
         return item.sell_in + self.sell_in_delta
@@ -78,10 +78,10 @@ class BackstagePassUpdater(QualityUpdater):
 class SulfurasUpdater(QualityUpdater):
     def __init__(self):
         self.sell_in_delta = 0
-        self.upper_bound = self.lower_bound = 80
+        self.quality_upper_bound = self.quality_lower_bound = 80
 
     def calculate_quality_delta(self, item):
         return 0
 
     def enforce_boundaries(self, quality):
-        return self.upper_bound
+        return self.quality_upper_bound
