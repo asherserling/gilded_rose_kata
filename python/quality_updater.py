@@ -14,21 +14,19 @@ def get_quality_updater(item):
 class QualityUpdater:
     def __init__(self, item):
         self.item = item
+        self.sell_in_delta = -1
 
     def update(self):
         self.update_quality()
         self.update_sell_in()
 
     def update_quality(self, base_rate=1):
-        delta = self.calculate_delta(self.item.sell_in)
+        delta = self.calculate_quality_delta(self.item.sell_in)
         potential_quality = self.item.quality + delta
         bounded_quality = self.enforce_boundaries(potential_quality)
         self.item.quality = bounded_quality
 
-    def update_sell_in(self):
-        self.item.sell_in -= 1
-
-    def calculate_delta(self, sell_in):
+    def calculate_quality_delta(self, sell_in):
         if sell_in > 0:
             return -1
         else:
@@ -42,9 +40,13 @@ class QualityUpdater:
         else:
             return 50
 
+    def update_sell_in(self):
+        self.item.sell_in = self.item.sell_in + self.sell_in_delta
+
+
 
 class ConjuredUpdater(QualityUpdater):
-    def calculate_delta(self, sell_in):
+    def calculate_quality_delta(self, sell_in):
         if sell_in > 0:
             return -2
         else:
@@ -52,7 +54,7 @@ class ConjuredUpdater(QualityUpdater):
 
 
 class AgedBrieUpdater(QualityUpdater):
-    def calculate_delta(self, sell_in):
+    def calculate_quality_delta(self, sell_in):
         if sell_in > 0:
             return 1
         else:
@@ -60,7 +62,7 @@ class AgedBrieUpdater(QualityUpdater):
 
 
 class BackstagePassUpdater(QualityUpdater):
-    def calculate_delta(self, sell_in):
+    def calculate_quality_delta(self, sell_in):
         if sell_in > 10:
             return 1
         elif 5 < sell_in <= 10:
@@ -72,8 +74,12 @@ class BackstagePassUpdater(QualityUpdater):
 
 
 class SulfurasUpdater(QualityUpdater):
-    def update_quality(self):
-        pass
+    def __init__(self, item):
+        super().__init__(item)
+        self.sell_in_delta = 0
 
-    def update_sell_in(self):
-        pass
+    def calculate_quality_delta(self, sell_in):
+        return 0
+
+    def enforce_boundaries(self, quality):
+        return 80
