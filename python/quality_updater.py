@@ -37,7 +37,9 @@ class QualityUpdater:
     # made this method into a one-liner at Aryeh Leib's sugestion,
     # but this might not be what was intended...
     def enforce_boundaries(self, quality):
-        return quality if self.quality_lower_bound <= quality <= self.quality_upper_bound else min([0, 50], key=lambda x: abs(x - quality))
+        return quality if self.quality_lower_bound <= quality <= self.quality_upper_bound else min([
+            self.quality_upper_bound, self.quality_lower_bound
+        ], key=lambda x: abs(x - quality))
 
     def calculate_sell_in(self, item):
         return item.sell_in + self.sell_in_delta
