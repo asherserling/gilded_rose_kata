@@ -74,6 +74,3 @@ class SulfurasUpdater(QualityUpdater):
     def __init__(self):
         self.sell_in_delta = 0
         self.quality_upper_bound = self.quality_lower_bound = 80
-
-    def enforce_boundaries(self, quality):
-        return self.quality_upper_bound
