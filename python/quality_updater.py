@@ -29,7 +29,7 @@ class QualityUpdater:
         return self.enforce_boundaries(potential_quality)
 
     def calculate_quality_delta(self, item, base_rate=1):
-        if item.sell_in > self.quality_lower_bound:
+        if item.sell_in > 0:
             return -base_rate
         else:
             return -base_rate * 2
@@ -76,9 +76,6 @@ class SulfurasUpdater(QualityUpdater):
     def __init__(self):
         self.sell_in_delta = 0
         self.quality_upper_bound = self.quality_lower_bound = 80
-
-    def calculate_quality_delta(self, item):
-        return 0
 
     def enforce_boundaries(self, quality):
         return self.quality_upper_bound
