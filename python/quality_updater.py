@@ -35,13 +35,8 @@ class QualityUpdater:
             return -base_rate * 2
 
     def enforce_boundaries(self, quality):
-        if self.quality_lower_bound <= quality <= self.quality_upper_bound:
-            return quality
-        elif quality < self.quality_lower_bound:
-            return self.quality_lower_bound
-        else:
-            return self.quality_upper_bound
-
+        return quality if self.quality_lower_bound <= quality <= self.quality_upper_bound else min([0, 50], key=lambda x: abs(x - quality))
+           
     def calculate_sell_in(self, item):
         return item.sell_in + self.sell_in_delta
 
